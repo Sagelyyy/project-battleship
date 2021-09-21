@@ -4,12 +4,14 @@
   "description": "",
   "main": "script.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/preset-env": "^7.15.6",
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
@@ -17,6 +19,7 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
+    "@jest/globals": "^27.2.1",
     "eslint-config-prettier": "^8.3.0"
   }
 }
