@@ -9,21 +9,24 @@ const gameboard = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0]
+    [0, 0, 0, 0, 0, 0, 0, 0],
   ];
+  const clearBoard = () => {
+    for(let i = 0; i < playArea.length; i += 1){
+      playArea[i] = [0, 0, 0, 0, 0, 0, 0, 0]
+    }
+  }
   const placeShip = (x, y) => {
     const newShip = shipFactory(3);
     for (let i = 0; i < playArea.length; i += 1) {
-      playArea[x][y] = 1
+      let shipLen = newShip.len;
+      while (shipLen > 0) {
+        playArea[(x + shipLen)-1][y] = 1;
+        shipLen -= 1;
+      }
     }
   };
-  return {playArea, placeShip };
+  return { playArea, placeShip, clearBoard };
 };
-
-const testGame = gameboard();
-console.log(testGame.playArea);
-testGame.placeShip(0,5)
-console.log(testGame.playArea);
-
 
 export default gameboard;

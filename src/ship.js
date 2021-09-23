@@ -20,7 +20,7 @@ const shipFactory = (len) => {
         }
       }
     }
-    return false
+    return false;
   };
   return { len, hit, isSunk, shipArr };
 };
