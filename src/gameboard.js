@@ -14,13 +14,24 @@ const gameboard = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
+  const shots = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
   const createShips = () => {
     const ships = {
-      carrier: shipFactory(5),
-      battleShip: shipFactory(4),
-      cruiser: shipFactory(3),
-      submarine: shipFactory(3),
-      destroyer: shipFactory(2),
+      carrier: shipFactory("carrier"),
+      battleShip: shipFactory("battleShip"),
+      cruiser: shipFactory("cruiser"),
+      submarine: shipFactory("submarine"),
+      destroyer: shipFactory("destroyer"),
     };
     return ships;
   };
@@ -33,23 +44,7 @@ const gameboard = () => {
     }
   };
 
-  // Gameboards should have a receiveAttack function
-  // that takes a pair of coordinates, determines
-  // whether or not the attack hit a ship and then
-  // sends the ‘hit’ function to the correct ship, or
-  // records the coordinates of the missed shot.
-
   const receiveAttack = (x, y) => {
-    const shots = [
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-    ];
     if (playArea[x][y] === 0) {
       shots[x][y] = "m";
     } else {
@@ -59,19 +54,23 @@ const gameboard = () => {
           break;
         case "c":
           ships.carrier.hit();
+          shots[x][y] = 'x'
           break;
         case "b":
           ships.battleShip.hit();
+          shots[x][y] = 'x'
           break;
         case "cr":
           ships.cruiser.hit();
+          shots[x][y] = 'x'
           break;
         case "s":
           ships.submarine.hit();
+          shots[x][y] = 'x'
           break;
         case "d":
-          console.log('d')
           ships.destroyer.hit();
+          shots[x][y] = 'x'
           break;
       }
     }
@@ -80,27 +79,37 @@ const gameboard = () => {
   const placeShip = (type, x, y) => {
     let shipLen = type.len;
     while (shipLen > 0) {
-      switch (type.len) {
+      switch (type.name) {
         default:
           playArea[x + shipLen - 1][y] = "?";
           break;
-        case 5:
+        case "carrier":
           playArea[x + shipLen - 1][y] = "c";
           break;
-        case 4:
+        case "battleShip":
           playArea[x + shipLen - 1][y] = "b";
           break;
-        case 3:
+        case "cruiser":
           playArea[x + shipLen - 1][y] = "cr";
           break;
-        case 2:
+        case "submarine":
+          playArea[x + shipLen - 1][y] = "s";
+          break;
+        case "destroyer":
           playArea[x + shipLen - 1][y] = "d";
           break;
       }
       shipLen -= 1;
     }
   };
-  return { playArea, placeShip, clearBoard, ships, receiveAttack };
+  return { playArea, placeShip, clearBoard, ships, receiveAttack, shots };
 };
+
+// const testGame = gameboard()
+// testGame.placeShip(testGame.ships.battleShip, 0, 5);
+// testGame.receiveAttack(3, 2)
+// console.log(testGame.shots)
+// console.log(testGame.shots[3][2])
+
 
 export default gameboard;

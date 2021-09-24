@@ -1,8 +1,36 @@
-const shipFactory = (len) => {
+const shipFactory = (type) => {
   const shipArr = [];
+  let len;
+  let name;
+  switch (type) {
+    default:
+      name = "?";
+      len = 1;
+      break;
+    case "carrier":
+      name = "carrier";
+      len = 5;
+      break;
+    case "battleShip":
+      name = "battleShip";
+      len = 4;
+      break;
+    case "cruiser":
+      name = "cruiser";
+      len = 3;
+      break;
+    case "submarine":
+      name = "submarine";
+      len = 3;
+      break;
+    case "destroyer":
+      name = "destroyer";
+      len = 2;
+      break;
+  }
   const hit = () => {
-    if(shipArr.length < len){
-      shipArr.push('x')
+    if (shipArr.length < len) {
+      shipArr.push("x");
     }
   };
   const isSunk = () => {
@@ -17,7 +45,7 @@ const shipFactory = (len) => {
     }
     return false;
   };
-  return { len, hit, isSunk, shipArr };
+  return { len, hit, isSunk, shipArr, name };
 };
 
 export default shipFactory;
