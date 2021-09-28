@@ -3,6 +3,7 @@
 import shipFactory from "./ship.js";
 
 const gameboard = () => {
+  // need to keep track of sunken ships
   const playArea = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -38,6 +39,14 @@ const gameboard = () => {
 
   const ships = createShips();
 
+  const shipStatus = () => {
+    const statusArr = []
+    Object.values(ships).forEach(ship => {
+      statusArr.push(`${ship.name} ${ship.isSunk()}`)
+    })
+    return statusArr
+  };
+
   const clearBoard = () => {
     for (let i = 0; i < playArea.length; i += 1) {
       playArea[i] = [0, 0, 0, 0, 0, 0, 0, 0];
@@ -54,23 +63,23 @@ const gameboard = () => {
           break;
         case "c":
           ships.carrier.hit();
-          shots[x][y] = 'x'
+          shots[x][y] = "x";
           break;
         case "b":
           ships.battleShip.hit();
-          shots[x][y] = 'x'
+          shots[x][y] = "x";
           break;
         case "cr":
           ships.cruiser.hit();
-          shots[x][y] = 'x'
+          shots[x][y] = "x";
           break;
         case "s":
           ships.submarine.hit();
-          shots[x][y] = 'x'
+          shots[x][y] = "x";
           break;
         case "d":
           ships.destroyer.hit();
-          shots[x][y] = 'x'
+          shots[x][y] = "x";
           break;
       }
     }
@@ -102,14 +111,23 @@ const gameboard = () => {
       shipLen -= 1;
     }
   };
-  return { playArea, placeShip, clearBoard, ships, receiveAttack, shots };
+  return {
+    playArea,
+    placeShip,
+    clearBoard,
+    ships,
+    receiveAttack,
+    shots,
+    shipStatus,
+  };
 };
 
 // const testGame = gameboard()
 // testGame.placeShip(testGame.ships.battleShip, 0, 5);
-// testGame.receiveAttack(3, 2)
-// console.log(testGame.shots)
-// console.log(testGame.shots[3][2])
-
+// testGame.receiveAttack(0, 5);
+// testGame.receiveAttack(1, 5);
+// testGame.receiveAttack(2, 5);
+// testGame.receiveAttack(3, 5);
+// console.log(testGame.shipStatus())
 
 export default gameboard;
