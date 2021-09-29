@@ -26,16 +26,19 @@ const gameboard = () => {
     [0, 0, 0, 0, 0, 0, 0, 0],
   ];
 
-  const createShips = () => {
+  const createShips = (owner) => {
     const ships = {
-      carrier: shipFactory("carrier"),
-      battleShip: shipFactory("battleShip"),
-      cruiser: shipFactory("cruiser"),
-      submarine: shipFactory("submarine"),
-      destroyer: shipFactory("destroyer"),
+      carrier: shipFactory(owner, "carrier"),
+      battleShip: shipFactory(owner, "battleShip"),
+      cruiser: shipFactory(owner, "cruiser"),
+      submarine: shipFactory(owner, "submarine"),
+      destroyer: shipFactory(owner, "destroyer"),
     };
     return ships;
   };
+
+  // set up two variables for ships, two different owners..
+  // like const p1Ships = createShips('player1') or something
 
   const ships = createShips();
 
@@ -119,15 +122,12 @@ const gameboard = () => {
     receiveAttack,
     shots,
     shipStatus,
+    createShips
   };
 };
 
-// const testGame = gameboard()
-// testGame.placeShip(testGame.ships.battleShip, 0, 5);
-// testGame.receiveAttack(0, 5);
-// testGame.receiveAttack(1, 5);
-// testGame.receiveAttack(2, 5);
-// testGame.receiveAttack(3, 5);
-// console.log(testGame.shipStatus())
+const testGame = gameboard()
+testGame.placeShip(testGame.ships.battleShip, 0, 5);
+
 
 export default gameboard;

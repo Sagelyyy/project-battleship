@@ -1,4 +1,4 @@
-const shipFactory = (type) => {
+const shipFactory = (type, owner) => {
   const shipArr = [];
   let len;
   let name;
@@ -45,7 +45,7 @@ const shipFactory = (type) => {
     }
     return false;
   };
-  return { len, hit, isSunk, shipArr, name };
+  return { owner, len, hit, isSunk, shipArr, name };
 };
 
 export default shipFactory;
