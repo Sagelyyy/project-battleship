@@ -3,28 +3,48 @@
 import shipFactory from "./ship.js";
 
 const gameboard = () => {
-  // need to keep track of sunken ships
-  const playArea = [
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-  ];
-
-  const shots = [
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-  ];
+  const boards = {
+    p1Board: [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    p1Shots: [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    p2Board: [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+    p2Shots: [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0],
+    ],
+  };
 
   const createShips = (owner, cpu) => {
     const ships = {
@@ -37,7 +57,6 @@ const gameboard = () => {
     return ships;
   };
 
-  // const ships = createShips();
   const p1Ships = createShips("player1", false);
   const p2Ships = createShips("player2", true);
 
@@ -50,80 +69,87 @@ const gameboard = () => {
   };
 
   const clearBoard = () => {
-    for (let i = 0; i < playArea.length; i += 1) {
-      playArea[i] = [0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < boards.p1Board.length; i += 1) {
+      boards.p1Board[i] = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    for (let i = 0; i < boards.p1Shots.length; i += 1) {
+      boards.p1Shots[i] = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    for (let i = 0; i < boards.p2Board.length; i += 1) {
+      boards.p2Board[i] = [0, 0, 0, 0, 0, 0, 0, 0];
+    }
+    for (let i = 0; i < boards.p2Shots.length; i += 1) {
+      boards.p2Shots[i] = [0, 0, 0, 0, 0, 0, 0, 0];
     }
   };
 
-  const receiveAttack = (receiver, x, y) => {
-    if (playArea[x][y] === 0) {
-      shots[x][y] = "m";
+  const receiveAttack = (attacker, receiver, receiverShip, x, y) => {
+    const currAttacker = attacker
+    if (receiver[x][y] === 0) {
+      currAttacker[x][y] = "m";
     } else {
-      switch (playArea[x][y]) {
+      switch (receiver[x][y]) {
         default:
           console.log("something went wrong");
           break;
         case "c":
-          receiver.carrier.hit();
-          shots[x][y] = "x";
+          receiverShip.carrier.hit();
+          currAttacker[x][y] = "x";
           break;
         case "b":
-          receiver.battleship.hit();
-          shots[x][y] = "x";
+          receiverShip.battleship.hit();
+          currAttacker[x][y] = "x";
           break;
         case "cr":
-          receiver.cruiser.hit();
-          shots[x][y] = "x";
+          receiverShip.cruiser.hit();
+          currAttacker[x][y] = "x";
           break;
         case "s":
-          receiver.submarine.hit();
-          shots[x][y] = "x";
+          receiverShip.submarine.hit();
+          currAttacker[x][y] = "x";
           break;
         case "d":
-          receiver.destroyer.hit();
-          shots[x][y] = "x";
+          receiverShip.destroyer.hit();
+          currAttacker[x][y] = "x";
           break;
       }
     }
   };
 
-
-  // maybe make a create player function
-
-  const placeShip = (type, x, y) => {
+  const placeShip = (player, type, x, y) => {
+    const currPlayer = player
     let shipLen = type.len;
     while (shipLen > 0) {
       switch (type.name) {
         default:
-          playArea[x + shipLen - 1][y] = "?";
+          currPlayer[x + shipLen - 1][y] = "?";
           break;
         case "carrier":
-          playArea[x + shipLen - 1][y] = "c";
+          currPlayer[x + shipLen - 1][y] = "c";
           break;
         case "battleship":
-          playArea[x + shipLen - 1][y] = "b";
+          currPlayer[x + shipLen - 1][y] = "b";
           break;
         case "cruiser":
-          playArea[x + shipLen - 1][y] = "cr";
+          currPlayer[x + shipLen - 1][y] = "cr";
           break;
         case "submarine":
-          playArea[x + shipLen - 1][y] = "s";
+          currPlayer[x + shipLen - 1][y] = "s";
           break;
         case "destroyer":
-          playArea[x + shipLen - 1][y] = "d";
+          currPlayer[x + shipLen - 1][y] = "d";
           break;
       }
       shipLen -= 1;
     }
   };
   return {
-    playArea,
+    boards,
     placeShip,
     clearBoard,
     p1Ships,
     p2Ships,
     receiveAttack,
-    shots,
     shipStatus,
     createShips,
   };
