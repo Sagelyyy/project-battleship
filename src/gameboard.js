@@ -83,41 +83,70 @@ const gameboard = () => {
     }
   };
 
-  const receiveAttack = (attacker, receiver, receiverShip, x, y) => {
-    const currAttacker = attacker
-    if (receiver[x][y] === 0) {
+  const receiveAttack = (attackerShots, receiverBoard, x, y) => {
+    const currAttacker = attackerShots;
+    if (receiverBoard[x][y] === 0) {
       currAttacker[x][y] = "m";
     } else {
-      switch (receiver[x][y]) {
-        default:
-          console.log("something went wrong");
-          break;
-        case "c":
-          receiverShip.carrier.hit();
-          currAttacker[x][y] = "x";
-          break;
-        case "b":
-          receiverShip.battleship.hit();
-          currAttacker[x][y] = "x";
-          break;
-        case "cr":
-          receiverShip.cruiser.hit();
-          currAttacker[x][y] = "x";
-          break;
-        case "s":
-          receiverShip.submarine.hit();
-          currAttacker[x][y] = "x";
-          break;
-        case "d":
-          receiverShip.destroyer.hit();
-          currAttacker[x][y] = "x";
-          break;
+      if (attackerShots === boards.p1Shots) {
+        switch (receiverBoard[x][y]) {
+          default:
+            console.log("something went wrong");
+            break;
+          case "c":
+            p2Ships.carrier.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "b":
+            p2Ships.battleship.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "cr":
+            p2Ships.cruiser.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "s":
+            p2Ships.submarine.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "d":
+            p2Ships.destroyer.hit();
+            currAttacker[x][y] = "x";
+            break;
+        }
+      }
+      if (attackerShots === boards.p2Shots) {
+        switch (receiverBoard[x][y]) {
+          default:
+            console.log("something went wrong");
+            break;
+          case "c":
+            p1Ships.carrier.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "b":
+            p1Ships.battleship.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "cr":
+            p1Ships.cruiser.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "s":
+            p1Ships.submarine.hit();
+            currAttacker[x][y] = "x";
+            break;
+          case "d":
+            p1Ships.destroyer.hit();
+            currAttacker[x][y] = "x";
+            break;
+        }
       }
     }
   };
 
-  const placeShip = (player, type, x, y) => {
-    const currPlayer = player
+  const placeShip = (playerBoard, type, x, y) => {
+    const currPlayer = playerBoard;
     let shipLen = type.len;
     while (shipLen > 0) {
       switch (type.name) {
