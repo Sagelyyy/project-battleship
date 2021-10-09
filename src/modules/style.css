@@ -1,0 +1,12 @@
+.gbWrapper{
+    margin-top: 4%;
+    margin-left: 33%;
+    width: 450px;
+    height: 190px;
+}
+
+.gb{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}

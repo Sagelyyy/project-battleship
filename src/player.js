@@ -9,7 +9,7 @@ const playerFactory = (name, type) => {
     }
   };
 
-  return { name, type };
+  return { name, type, turn };
 };
 
 export default playerFactory;
