@@ -9,7 +9,7 @@ const playerFactory = (name, type) => {
     return playerID;
   };
   const playerID = setId();
-  const turn = (x, y) => {
+  const turn = (game, x, y) => {
     if(playerID === 'player1'){
       game.receiveAttack(
         game.boards.p1Shots,

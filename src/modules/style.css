@@ -1,3 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+  }
+
+  .gameMessage{
+      margin-left: 45%;
+  }
+
+  .playerForms{
+      display: block;
+      margin-top: 4%;
+  }
+
 .playArea{
     display: flex;
     flex-direction: row;
