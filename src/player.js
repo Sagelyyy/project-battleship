@@ -1,15 +1,26 @@
 import gameboard from "./gameboard";
 
+let id = 1;
+
 const playerFactory = (name, type) => {
-  const turn = (board, x, y) => {
-    if (type === "player") {
-      board.receiveAttack(board.boards.p1Shots, board.boards.p2Board, null, x, y)
-    } else if (type === "cpu") {
-      // ai stuff
+  const setId = () => {
+    const playerID = `player${id}`;
+    id += 1;
+    return playerID;
+  };
+  const playerID = setId();
+  const turn = (x, y) => {
+    if(playerID === 'player1'){
+      game.receiveAttack(
+        game.boards.p1Shots,
+        game.boards.p2Board,
+        x,
+        y
+      )
     }
   };
 
-  return { name, type, turn };
+  return { name, type, turn, playerID };
 };
 
 export default playerFactory;

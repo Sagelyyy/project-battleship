@@ -1,8 +1,26 @@
-.gbWrapper{
+.playArea{
+    display: flex;
+    flex-direction: row;
+    margin-left: 25%;
     margin-top: 4%;
-    margin-left: 33%;
+    width: 900px;
+    height: 900px;
+}
+
+.gbWrapper{
     width: 450px;
     height: 190px;
+}
+
+.sbWrapper{
+    width: 450px;
+    height: 190px;
+}
+
+.sb{
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
 }
 
 .gb{

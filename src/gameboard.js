@@ -184,7 +184,4 @@ const gameboard = () => {
   };
 };
 
-const testGame = gameboard();
-testGame.placeShip(testGame.p1Ships.battleship, 0, 5);
-
 export default gameboard;
