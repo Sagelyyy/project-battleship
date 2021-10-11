@@ -9,13 +9,21 @@
         <p>Dev Buttons:</p>
         <button class='getPlayers'>Get players</button>
         <button class='getShips'>Get ships</button>
+        <button class='getBoards'>Get boards</button>
     </section>
     <section class="playerForms">
         <label class='inputDesc'>Enter player 1 name:</label>
         <input class='nameInput'>
         <button class='nameSubmit'>Submit</button>
     </section>
-    <p class='gameMessage'>Player, Place your shipname</p>
+    <section class='shipSelect' hidden>
+    <p class='gameMessage'>Choose what ship to place:</p>
+        <button class='carrierBtn' value="carrier">Carrier</button>
+        <button class='battleshipBtn' value='battleship'>Battleship</button>
+        <button class='cruiserBtn' value="cruiser">Cruiser</button>
+        <button class='submarineBtn' value="submarine">Submarine</button>
+        <button class='destroyerBtn' value="destroyer">Destroyer</button>
+    </section>
     <section class="playArea">
       <section class="sbWrapper">
         <section class="sb"></section>
