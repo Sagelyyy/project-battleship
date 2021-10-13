@@ -8,23 +8,39 @@ const MAIN = (function () {
   let player2;
 
   function boardSetup() {
-    let v = 8;
+    let v = 11;
+    let leftCol = 1
+    let shotCol = 1
+    const topRow = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     while (v > 0) {
-      for (let i = 0; i < 8; i += 1) {
+      for (let i = 0; i < 11; i += 1) {
         const sb = document.querySelector(".sb");
         const tile = document.createElement("div");
+        if(v === 11 && i > 0){
+          tile.textContent = topRow[i]
+        }
+        if(i === 0 && v < 11){
+          tile.textContent = leftCol
+          leftCol += 1
+        }
         tile.classList.add(`myTile${i}`);
         tile.id = `tile${i}`;
-        tile.textContent = i;
         tile.style.width = "50px";
         tile.style.height = "50px";
         tile.style.backgroundColor = "lightblue";
         tile.style.border = "2px solid black";
         sb.appendChild(tile);
       }
-      for (let j = 0; j < 8; j += 1) {
+      for (let j = 0; j < 11; j += 1) {
         const gb = document.querySelector(".gb");
         const tile = document.createElement("div");
+        if(v === 11 && j > 0){
+          tile.textContent = topRow[j]
+        }
+        if(j === 0 && v < 11){
+          tile.textContent = shotCol
+          shotCol += 1
+        }
         tile.classList.add("shotsTile");
         tile.style.width = "50px";
         tile.style.height = "50px";
@@ -74,10 +90,32 @@ const MAIN = (function () {
     }
   }
 
-  function gameSetup() {
+  function gameSetup(currPlacement) {
     document.querySelector(".shipSelect").hidden = false;
-    document.querySelector(".carrierBtn").onclick =
-      alert('ph')
+    document.querySelector(".gameMessage").textContent = `Place your ${currPlacement}`
+  }
+
+  function shipPlaceMenu(ship){
+    switch(ship){
+      default: 
+        console.log('something went wrong')
+        break;
+        case "carrier":
+
+          break;
+        case "battleship":
+
+          break;
+        case "cruiser":
+
+          break;
+        case "submarine":
+
+          break;
+        case "destroyer":
+
+          break;
+    }
   }
 
   const nameSubmit = document.querySelector(".nameSubmit");
