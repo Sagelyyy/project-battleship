@@ -8,39 +8,44 @@ const MAIN = (function () {
   let player2;
 
   function boardSetup() {
-    let v = 11;
-    let leftCol = 1
-    let shotCol = 1
-    const topRow = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
-    while (v > 0) {
+    // separate out setting the tile class names. maybe?
+    let leftCol = 1;
+    let shotCol = 1;
+    let tileCount = -1;
+    let xCount = -1;
+    let v = 0;
+    const topRow = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
+    while (v < 11) {
       for (let i = 0; i < 11; i += 1) {
         const sb = document.querySelector(".sb");
         const tile = document.createElement("div");
-        if(v === 11 && i > 0){
-          tile.textContent = topRow[i]
-        }
-        if(i === 0 && v < 11){
-          tile.textContent = leftCol
-          leftCol += 1
-        }
-        tile.classList.add(`myTile${i}`);
-        tile.id = `tile${i}`;
         tile.style.width = "50px";
         tile.style.height = "50px";
         tile.style.backgroundColor = "lightblue";
         tile.style.border = "2px solid black";
+        if (v === 0) {
+          tile.textContent = topRow[i];
+        }
+        if (i === 0 && v !== 0) {
+          tile.textContent = leftCol;
+          leftCol += 1;
+        }
+        if (i > 0 && v !== 0) {
+          tile.classList.add(`x${xCount}`);
+          tile.classList.add(`y${tileCount}`);
+          // tile.textContent = `${xCount}, ${tileCount}`;
+        }
+
+        if (tileCount < 10) {
+          tileCount += 1;
+        } else {
+          tileCount = 0;
+        }
         sb.appendChild(tile);
       }
       for (let j = 0; j < 11; j += 1) {
         const gb = document.querySelector(".gb");
         const tile = document.createElement("div");
-        if(v === 11 && j > 0){
-          tile.textContent = topRow[j]
-        }
-        if(j === 0 && v < 11){
-          tile.textContent = shotCol
-          shotCol += 1
-        }
         tile.classList.add("shotsTile");
         tile.style.width = "50px";
         tile.style.height = "50px";
@@ -48,7 +53,8 @@ const MAIN = (function () {
         tile.style.border = "2px solid black";
         gb.appendChild(tile);
       }
-      v -= 1;
+      v += 1;
+      xCount += 1;
     }
   }
 
@@ -77,14 +83,11 @@ const MAIN = (function () {
   }
 
   function boardRender(board) {
-    board = game.boards.p1Board
     for (let row = 0; row < board.length; row += 1) {
       for (let col = 0; col < board[row].length; col += 1) {
         if (board[row][col] !== 0) {
-          const tiles = document.querySelectorAll(`.myTile${col}`);
-          for (let i = 0; i < board.length; i += 1) {
-            tiles[row].style.backgroundColor = "red";
-          }
+          const tile = document.querySelector(`.x${[row]}.y${[col]}`);
+          tile.style.backgroundColor = "red";
         }
       }
     }
@@ -92,29 +95,26 @@ const MAIN = (function () {
 
   function gameSetup(currPlacement) {
     document.querySelector(".shipSelect").hidden = false;
-    document.querySelector(".gameMessage").textContent = `Place your ${currPlacement}`
+    document.querySelector(
+      ".gameMessage"
+    ).textContent = `Place your ${currPlacement}`;
   }
 
-  function shipPlaceMenu(ship){
-    switch(ship){
-      default: 
-        console.log('something went wrong')
+  function shipPlaceMenu(ship) {
+    switch (ship) {
+      default:
+        console.log("something went wrong");
         break;
-        case "carrier":
-
-          break;
-        case "battleship":
-
-          break;
-        case "cruiser":
-
-          break;
-        case "submarine":
-
-          break;
-        case "destroyer":
-
-          break;
+      case "carrier":
+        break;
+      case "battleship":
+        break;
+      case "cruiser":
+        break;
+      case "submarine":
+        break;
+      case "destroyer":
+        break;
     }
   }
 
@@ -134,8 +134,15 @@ const MAIN = (function () {
   shipsDev.onclick = getShips;
   const boardsDev = document.querySelector(".getBoards");
   boardsDev.onclick = getBoards;
-  const placeDev = document.querySelector('.placement')
-  placeDev.addEventListener('click', function(){boardRender(game.boards.p1Board)})
+  const shipTest = document.querySelector('.shipTest')
+  shipTest.addEventListener("click", () => {
+    game.placeShip(game.boards.p1Board, game.p1Ships.carrier, 0, 2);
+  });
+  const placeDev = document.querySelector(".placement");
+  placeDev.addEventListener("click", () => {
+    boardRender(game.boards.p1Board);
+  });
+
 
   return {
     boardSetup,
