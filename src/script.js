@@ -8,7 +8,6 @@ const MAIN = (function () {
   let player2;
 
   function boardSetup() {
-    // separate out setting the tile class names. maybe?
     let leftCol = 1;
     let shotCol = 1;
     let tileCount = -1;
@@ -23,6 +22,7 @@ const MAIN = (function () {
         tile.style.height = "50px";
         tile.style.backgroundColor = "lightblue";
         tile.style.border = "2px solid black";
+        tile.id = 'playTile'
         if (v === 0) {
           tile.textContent = topRow[i];
         }
@@ -33,7 +33,8 @@ const MAIN = (function () {
         if (i > 0 && v !== 0) {
           tile.classList.add(`x${xCount}`);
           tile.classList.add(`y${tileCount}`);
-          // tile.textContent = `${xCount}, ${tileCount}`;
+          // Dev
+          tile.textContent = `${xCount}, ${tileCount}`;
         }
 
         if (tileCount < 10) {
@@ -100,23 +101,46 @@ const MAIN = (function () {
     ).textContent = `Place your ${currPlacement}`;
   }
 
+  function placeOnClick(ship){
+    // need to seperate out the callback for the eventlistener maybe
+    console.log('place ship..')
+    const currShip = ship
+    const tiles = document.querySelectorAll('#playTile')
+    tiles.forEach((tile) => {
+      tile.addEventListener("click", (e) => {
+        const classCoords = e.target.classList.value
+        const coords = classCoords.split(/(\d)/)
+        game.placeShip(game.boards.p1Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
+      })
+    })
+  }
+
+
   function shipPlaceMenu(ship) {
+    const currShip = ship
     switch (ship) {
       default:
         console.log("something went wrong");
         break;
       case "carrier":
+        placeOnClick(game.p1Ships.carrier)
         break;
       case "battleship":
+        placeOnClick('battleship')
         break;
       case "cruiser":
+        placeOnClick('cruiser')
         break;
       case "submarine":
+        placeOnClick('sub')
         break;
       case "destroyer":
+        placeOnClick('destroyer')
         break;
     }
   }
+
+
 
   const nameSubmit = document.querySelector(".nameSubmit");
   nameSubmit.onclick = function () {
@@ -128,6 +152,28 @@ const MAIN = (function () {
     }
   };
 
+  const carrierBtn = document.querySelector('.carrierBtn')
+  carrierBtn.onclick = () => {
+    shipPlaceMenu(carrierBtn.value)
+  }
+  const battleshipBtn = document.querySelector('.battleshipBtn')
+  battleshipBtn.onclick = () => {
+    shipPlaceMenu(battleshipBtn.value)
+  }
+  const cruiserBtn = document.querySelector('.cruiserBtn')
+  cruiserBtn.onclick = () => {
+    shipPlaceMenu(cruiserBtn.value)
+  }
+  const submarineBtn = document.querySelector('.submarineBtn')
+  submarineBtn.onclick = () => {
+    shipPlaceMenu(submarineBtn.value)
+  }
+  const destroyerBtn = document.querySelector('.destroyerBtn')
+  destroyerBtn.onclick = () => {
+    shipPlaceMenu(destroyerBtn.value)
+  }
+
+  // Dev Buttons
   const btn = document.querySelector(".getPlayers");
   btn.onclick = getPlayers;
   const shipsDev = document.querySelector(".getShips");
