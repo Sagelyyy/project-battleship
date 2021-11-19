@@ -6,6 +6,7 @@ const MAIN = (function () {
   const game = gameboard();
   let player1;
   let player2;
+  let currShip;
 
   function boardSetup() {
     let leftCol = 1;
@@ -101,23 +102,29 @@ const MAIN = (function () {
     ).textContent = `Place your ${currPlacement}`;
   }
 
-  function placeOnClick(ship){
-    // need to seperate out the callback for the eventlistener maybe
-    console.log('place ship..')
-    const currShip = ship
+  function dropShip(event){
+    const classCoords = event.target.classList.value
+    const coords = classCoords.split(/(\d)/)
+    game.placeShip(game.boards.p1Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
+    boardRender(game.boards.p1Board)
     const tiles = document.querySelectorAll('#playTile')
     tiles.forEach((tile) => {
-      tile.addEventListener("click", (e) => {
-        const classCoords = e.target.classList.value
-        const coords = classCoords.split(/(\d)/)
-        game.placeShip(game.boards.p1Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
-      })
+      tile.removeEventListener("click", dropShip)
+    })
+}
+
+  function placeOnClick(ship){
+    currShip = ship
+    const tiles = document.querySelectorAll('#playTile')
+    tiles.forEach((tile) => {
+      tile.addEventListener("click", dropShip)
     })
   }
 
 
+
+
   function shipPlaceMenu(ship) {
-    const currShip = ship
     switch (ship) {
       default:
         console.log("something went wrong");
@@ -126,16 +133,16 @@ const MAIN = (function () {
         placeOnClick(game.p1Ships.carrier)
         break;
       case "battleship":
-        placeOnClick('battleship')
+        placeOnClick(game.p1Ships.battleship)
         break;
       case "cruiser":
-        placeOnClick('cruiser')
+        placeOnClick(game.p1Ships.cruiser)
         break;
       case "submarine":
-        placeOnClick('sub')
+        placeOnClick(game.p1Ships.submarine)
         break;
       case "destroyer":
-        placeOnClick('destroyer')
+        placeOnClick(game.p1Ships.destroyer)
         break;
     }
   }
