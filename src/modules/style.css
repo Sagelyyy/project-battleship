@@ -11,8 +11,15 @@
   }
 
   .playerForms{
+      margin-left: 40%;
+      margin-right: 50%;
       display: block;
       margin-top: 4%;
+      text-align: center;
+  }
+  
+  .nameSubmit{
+      width: 100%;
   }
 
 .playArea{

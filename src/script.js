@@ -62,11 +62,19 @@ const MAIN = (function () {
 
   function playerSetup() {
     const input = document.querySelector(".nameInput");
+    const playerType = document.querySelector('.playerType')
     const desc = document.querySelector(".inputDesc");
-    const player = playerFactory(input.value, "player");
-    input.value = "";
-    desc.textContent = "Enter player 2 name:";
-    return player;
+    if(playerType.checked){
+      const player = playerFactory(input.value, playerType.value);
+      input.value = "";
+      desc.textContent = "Enter player 2 name:";
+      return player;
+    }
+      const player = playerFactory(input.value, "ai");
+      input.value = "";
+      desc.textContent = "Enter player 2 name:";
+      return player;
+    
   }
 
   function getPlayers() {
@@ -96,6 +104,7 @@ const MAIN = (function () {
   }
 
   function gameSetup(currPlacement) {
+    // call something like gameSetup(player1)??
     document.querySelector(".shipSelect").hidden = false;
     document.querySelector(
       ".gameMessage"
@@ -120,9 +129,6 @@ const MAIN = (function () {
       tile.addEventListener("click", dropShip)
     })
   }
-
-
-
 
   function shipPlaceMenu(ship) {
     switch (ship) {
