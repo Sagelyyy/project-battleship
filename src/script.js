@@ -7,6 +7,7 @@ const MAIN = (function () {
   let player1;
   let player2;
   let currShip;
+  let currPlayer;
 
   function boardSetup() {
     let leftCol = 1;
@@ -98,21 +99,39 @@ const MAIN = (function () {
         if (board[row][col] !== 0) {
           const tile = document.querySelector(`.x${[row]}.y${[col]}`);
           tile.style.backgroundColor = "red";
+        }else {
+        const tile = document.querySelector(`.x${[row]}.y${[col]}`);
+        tile.style.backgroundColor = "lightblue";
+        }
+  }
+  // if (board[row][col] === 0){
+  //   const blankTile = document.querySelector(`.x${[row]}.y${[col]}`)
+  //   blankTile.backgroundColor = 'lightblue';
+  // }
+}
+}
+  
+
+  function clearBoard(board){
+    for (let row = 0; row < board.length; row += 1) {
+      for (let col = 0; col < board[row].length; col += 1) {
+        if (board[row][col] === 0) {
+          const tile = document.querySelector(`.x${[row]}.y${[col]}`);
+          tile.style.backgroundColor = 'lightblue'
         }
       }
     }
   }
 
 
-
-  let p1ShipsSelection = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer']
-  let p2ShipsSelection = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer']
+  const p1ShipsSelection = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer']
+  const p2ShipsSelection = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer']
 
   function gameSetup() {
     if(p1ShipsSelection.length === 0 && p2ShipsSelection.length === 0){
       document.querySelector(".shipSelect").hidden = true;
-      // some new function()
-      console.log('yay')
+      document.querySelector(".playerForms").hidden = true;
+      // some new function() to start the game
     } else {
     document.querySelector(".shipSelect").hidden = false;
     let currPlacement
@@ -121,27 +140,34 @@ const MAIN = (function () {
       document.querySelector(
         ".gameMessage"
       ).textContent = `Player 1 place your ${currPlacement}`;
-
-      shipPlaceMenu(currPlacement)
+      boardRender(game.boards.p1Board)
+      shipPlaceMenu(game.boards.p1Board, currPlacement)
     } else {
       currPlacement = p2ShipsSelection.pop()
       document.querySelector(
         ".gameMessage"
       ).textContent = `Player 2 place your ${currPlacement}`;
-      shipPlaceMenu(currPlacement)
+      boardRender(game.boards.p2Board)
+      shipPlaceMenu(game.boards.p2Board, currPlacement)
       }
     }
   }
 
   function dropShip(event){
+    // need to be able to seperate out which board it goes to somehow
     const classCoords = event.target.classList.value
     const coords = classCoords.split(/(\d)/)
-    game.placeShip(game.boards.p1Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
-    boardRender(game.boards.p1Board)
-    const tiles = document.querySelectorAll('#playTile')
-    tiles.forEach((tile) => {
-      tile.removeEventListener("click", dropShip)
-    })
+    if(currPlayer === 'p1'){
+      game.placeShip(game.boards.p1Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
+      boardRender(game.boards.p1Board)
+    } else if (currPlayer === 'p2'){
+      game.placeShip(game.boards.p2Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
+      boardRender(game.boards.p2Board)
+    }
+      const tiles = document.querySelectorAll('#playTile')
+      tiles.forEach((tile) => {
+        tile.removeEventListener("click", dropShip)
+      })
     gameSetup()
 }
 
@@ -154,28 +180,53 @@ function placeOnClick(ship){
 }
 
 
-function shipPlaceMenu(ship) {
+function shipPlaceMenu(player, ship) {
   // need to differentiate between players like placeOnClick(game.currPlayer.carrier)
+  if(player === game.boards.p1Board){
+    currPlayer = 'p1'
+    switch (ship) {
+      default:
+        console.log("something went wrong");
+        break;
+      case "carrier":
+        placeOnClick(game.p1Ships.carrier)
+        break;
+      case "battleship":
+        placeOnClick(game.p1Ships.battleship)
+        break;
+      case "cruiser":
+        placeOnClick(game.p1Ships.cruiser)
+        break;
+      case "submarine":
+        placeOnClick(game.p1Ships.submarine)
+        break;
+      case "destroyer":
+        placeOnClick(game.p1Ships.destroyer)
+        break;
+    }
+ } else if (player === game.boards.p2Board){
+   currPlayer = 'p2'
   switch (ship) {
     default:
       console.log("something went wrong");
       break;
     case "carrier":
-      placeOnClick(game.p1Ships.carrier)
+      placeOnClick(game.p2Ships.carrier)
       break;
     case "battleship":
-      placeOnClick(game.p1Ships.battleship)
+      placeOnClick(game.p2Ships.battleship)
       break;
     case "cruiser":
-      placeOnClick(game.p1Ships.cruiser)
+      placeOnClick(game.p2Ships.cruiser)
       break;
     case "submarine":
-      placeOnClick(game.p1Ships.submarine)
+      placeOnClick(game.p2Ships.submarine)
       break;
     case "destroyer":
-      placeOnClick(game.p1Ships.destroyer)
+      placeOnClick(game.p2Ships.destroyer)
       break;
   }
+ }
 }
 
   const nameSubmit = document.querySelector(".nameSubmit");
@@ -224,6 +275,14 @@ function shipPlaceMenu(ship) {
   placeDev.addEventListener("click", () => {
     boardRender(game.boards.p1Board);
   });
+  const clearBoardDev = document.querySelector(".clearBoard1");
+  clearBoardDev.addEventListener('click', () =>{
+    boardRender(game.boards.p1Board);
+  })
+  const clearBoardDev2 = document.querySelector(".clearBoard2");
+  clearBoardDev2.addEventListener('click', () =>{
+    boardRender(game.boards.p2Board);
+  })
 
 
   return {
