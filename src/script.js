@@ -11,9 +11,11 @@ const MAIN = (function () {
 
   function boardSetup() {
     let leftCol = 1;
-    // let shotCol = 1;
+    let shotCol = 1;
     let tileCount = -1;
     let xCount = -1;
+    let shotCount = -1;
+    let xShotCount = -1;
     let v = 0;
     const topRow = ["", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
     while (v < 11) {
@@ -24,7 +26,7 @@ const MAIN = (function () {
         tile.style.height = "50px";
         tile.style.backgroundColor = "lightblue";
         tile.style.border = "2px solid black";
-        tile.id = 'playTile'
+        tile.id = "playTile";
         if (v === 0) {
           tile.textContent = topRow[i];
         }
@@ -36,7 +38,7 @@ const MAIN = (function () {
           tile.classList.add(`x${xCount}`);
           tile.classList.add(`y${tileCount}`);
           // Dev
-          tile.textContent = `${xCount}, ${tileCount}`;
+          // tile.textContent = `${xCount}, ${tileCount}`;
         }
 
         if (tileCount < 10) {
@@ -55,27 +57,49 @@ const MAIN = (function () {
         tile.style.backgroundColor = "lightgrey";
         tile.style.border = "2px solid black";
         gb.appendChild(tile);
+        if (v === 0) {
+          tile.textContent = topRow[j];
+        }
+
+        if (j > 0 && v !== 0) {
+          tile.classList.add(`x${xShotCount}`);
+          tile.classList.add(`y${shotCount}`);
+          // Dev
+          // tile.textContent = `${xShotCount}, ${shotCount}`;
+        }
+
+        if (shotCount < 10) {
+          shotCount += 1;
+        } else {
+          shotCount = 0;
+        }
+
+        if (j === 0 && v !== 0) {
+          tile.textContent = shotCol;
+          shotCol += 1;
+        }
+        
       }
       v += 1;
       xCount += 1;
+      xShotCount += 1;
     }
   }
 
   function playerSetup() {
     const input = document.querySelector(".nameInput");
-    const playerType = document.querySelector('.playerType')
+    const playerType = document.querySelector(".playerType");
     const desc = document.querySelector(".inputDesc");
-    if(playerType.checked){
+    if (playerType.checked) {
       const player = playerFactory(input.value, playerType.value);
       input.value = "";
       desc.textContent = "Enter player 2 name:";
       return player;
     }
-      const player = playerFactory(input.value, "ai");
-      input.value = "";
-      desc.textContent = "Enter player 2 name:";
-      return player;
-    
+    const player = playerFactory(input.value, "ai");
+    input.value = "";
+    desc.textContent = "Enter player 2 name:";
+    return player;
   }
 
   function getPlayers() {
@@ -99,135 +123,139 @@ const MAIN = (function () {
         if (board[row][col] !== 0) {
           const tile = document.querySelector(`.x${[row]}.y${[col]}`);
           tile.style.backgroundColor = "red";
-        }else {
-        const tile = document.querySelector(`.x${[row]}.y${[col]}`);
-        tile.style.backgroundColor = "lightblue";
-        }
-  }
-  // if (board[row][col] === 0){
-  //   const blankTile = document.querySelector(`.x${[row]}.y${[col]}`)
-  //   blankTile.backgroundColor = 'lightblue';
-  // }
-}
-}
-  
-
-  function clearBoard(board){
-    for (let row = 0; row < board.length; row += 1) {
-      for (let col = 0; col < board[row].length; col += 1) {
-        if (board[row][col] === 0) {
+        } else {
           const tile = document.querySelector(`.x${[row]}.y${[col]}`);
-          tile.style.backgroundColor = 'lightblue'
+          tile.style.backgroundColor = "lightblue";
         }
       }
     }
   }
 
-
-  const p1ShipsSelection = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer']
-  const p2ShipsSelection = ['carrier', 'battleship', 'cruiser', 'submarine', 'destroyer']
+  const p1ShipsSelection = [
+    "carrier",
+    "battleship",
+    "cruiser",
+    "submarine",
+    "destroyer",
+  ];
+  const p2ShipsSelection = [
+    "carrier",
+    "battleship",
+    "cruiser",
+    "submarine",
+    "destroyer",
+  ];
 
   function gameSetup() {
-    if(p1ShipsSelection.length === 0 && p2ShipsSelection.length === 0){
+    if (p1ShipsSelection.length === 0 && p2ShipsSelection.length === 0) {
       document.querySelector(".shipSelect").hidden = true;
       document.querySelector(".playerForms").hidden = true;
       // some new function() to start the game
     } else {
-    document.querySelector(".shipSelect").hidden = false;
-    let currPlacement
-    if(p1ShipsSelection.length > 0){
-      currPlacement = p1ShipsSelection.pop()
-      document.querySelector(
-        ".gameMessage"
-      ).textContent = `Player 1 place your ${currPlacement}`;
-      boardRender(game.boards.p1Board)
-      shipPlaceMenu(game.boards.p1Board, currPlacement)
-    } else {
-      currPlacement = p2ShipsSelection.pop()
-      document.querySelector(
-        ".gameMessage"
-      ).textContent = `Player 2 place your ${currPlacement}`;
-      boardRender(game.boards.p2Board)
-      shipPlaceMenu(game.boards.p2Board, currPlacement)
+      document.querySelector(".shipSelect").hidden = false;
+      let currPlacement;
+      if (p1ShipsSelection.length > 0) {
+        currPlacement = p1ShipsSelection.pop();
+        document.querySelector(
+          ".gameMessage"
+        ).textContent = `Player 1 place your ${currPlacement}`;
+        boardRender(game.boards.p1Board);
+        shipPlaceMenu(game.boards.p1Board, currPlacement);
+      } else {
+        currPlacement = p2ShipsSelection.pop();
+        document.querySelector(
+          ".gameMessage"
+        ).textContent = `Player 2 place your ${currPlacement}`;
+        boardRender(game.boards.p2Board);
+        shipPlaceMenu(game.boards.p2Board, currPlacement);
       }
     }
   }
 
-  function dropShip(event){
+  function dropShip(event) {
     // need to be able to seperate out which board it goes to somehow
-    const classCoords = event.target.classList.value
-    const coords = classCoords.split(/(\d)/)
-    if(currPlayer === 'p1'){
-      game.placeShip(game.boards.p1Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
-      boardRender(game.boards.p1Board)
-    } else if (currPlayer === 'p2'){
-      game.placeShip(game.boards.p2Board, currShip, parseInt(coords[1], 10), parseInt(coords[3], 10))
-      boardRender(game.boards.p2Board)
+    const classCoords = event.target.classList.value;
+    const coords = classCoords.split(/(\d)/);
+    if (currPlayer === "p1") {
+      game.placeShip(
+        game.boards.p1Board,
+        currShip,
+        parseInt(coords[1], 10),
+        parseInt(coords[3], 10)
+      );
+      boardRender(game.boards.p1Board);
+    } else if (currPlayer === "p2") {
+      game.placeShip(
+        game.boards.p2Board,
+        currShip,
+        parseInt(coords[1], 10),
+        parseInt(coords[3], 10)
+      );
+      boardRender(game.boards.p2Board);
     }
-      const tiles = document.querySelectorAll('#playTile')
-      tiles.forEach((tile) => {
-        tile.removeEventListener("click", dropShip)
-      })
-    gameSetup()
-}
-
-function placeOnClick(ship){
-  currShip = ship
-  const tiles = document.querySelectorAll('#playTile')
-  tiles.forEach((tile) => {
-    tile.addEventListener("click", dropShip)
-  })
-}
-
-
-function shipPlaceMenu(player, ship) {
-  // need to differentiate between players like placeOnClick(game.currPlayer.carrier)
-  if(player === game.boards.p1Board){
-    currPlayer = 'p1'
-    switch (ship) {
-      default:
-        console.log("something went wrong");
-        break;
-      case "carrier":
-        placeOnClick(game.p1Ships.carrier)
-        break;
-      case "battleship":
-        placeOnClick(game.p1Ships.battleship)
-        break;
-      case "cruiser":
-        placeOnClick(game.p1Ships.cruiser)
-        break;
-      case "submarine":
-        placeOnClick(game.p1Ships.submarine)
-        break;
-      case "destroyer":
-        placeOnClick(game.p1Ships.destroyer)
-        break;
-    }
- } else if (player === game.boards.p2Board){
-   currPlayer = 'p2'
-  switch (ship) {
-    default:
-      console.log("something went wrong");
-      break;
-    case "carrier":
-      placeOnClick(game.p2Ships.carrier)
-      break;
-    case "battleship":
-      placeOnClick(game.p2Ships.battleship)
-      break;
-    case "cruiser":
-      placeOnClick(game.p2Ships.cruiser)
-      break;
-    case "submarine":
-      placeOnClick(game.p2Ships.submarine)
-      break;
-    case "destroyer":
-      placeOnClick(game.p2Ships.destroyer)
-      break;
+    const tiles = document.querySelectorAll("#playTile");
+    tiles.forEach((tile) => {
+      tile.removeEventListener("click", dropShip);
+    });
+    gameSetup();
   }
- }
-}
+
+  function placeOnClick(ship) {
+    currShip = ship;
+    const tiles = document.querySelectorAll("#playTile");
+    tiles.forEach((tile) => {
+      tile.addEventListener("click", dropShip);
+    });
+  }
+
+  function shipPlaceMenu(player, ship) {
+    // need to differentiate between players like placeOnClick(game.currPlayer.carrier)
+    if (player === game.boards.p1Board) {
+      currPlayer = "p1";
+      switch (ship) {
+        default:
+          console.log("something went wrong");
+          break;
+        case "carrier":
+          placeOnClick(game.p1Ships.carrier);
+          break;
+        case "battleship":
+          placeOnClick(game.p1Ships.battleship);
+          break;
+        case "cruiser":
+          placeOnClick(game.p1Ships.cruiser);
+          break;
+        case "submarine":
+          placeOnClick(game.p1Ships.submarine);
+          break;
+        case "destroyer":
+          placeOnClick(game.p1Ships.destroyer);
+          break;
+      }
+    } else if (player === game.boards.p2Board) {
+      currPlayer = "p2";
+      switch (ship) {
+        default:
+          console.log("something went wrong");
+          break;
+        case "carrier":
+          placeOnClick(game.p2Ships.carrier);
+          break;
+        case "battleship":
+          placeOnClick(game.p2Ships.battleship);
+          break;
+        case "cruiser":
+          placeOnClick(game.p2Ships.cruiser);
+          break;
+        case "submarine":
+          placeOnClick(game.p2Ships.submarine);
+          break;
+        case "destroyer":
+          placeOnClick(game.p2Ships.destroyer);
+          break;
+      }
+    }
+  }
 
   const nameSubmit = document.querySelector(".nameSubmit");
   nameSubmit.onclick = function () {
@@ -239,27 +267,6 @@ function shipPlaceMenu(player, ship) {
     }
   };
 
-  // const carrierBtn = document.querySelector('.carrierBtn')
-  // carrierBtn.onclick = () => {
-  //   shipPlaceMenu(carrierBtn.value)
-  // }
-  // const battleshipBtn = document.querySelector('.battleshipBtn')
-  // battleshipBtn.onclick = () => {
-  //   shipPlaceMenu(battleshipBtn.value)
-  // }
-  // const cruiserBtn = document.querySelector('.cruiserBtn')
-  // cruiserBtn.onclick = () => {
-  //   shipPlaceMenu(cruiserBtn.value)
-  // }
-  // const submarineBtn = document.querySelector('.submarineBtn')
-  // submarineBtn.onclick = () => {
-  //   shipPlaceMenu(submarineBtn.value)
-  // }
-  // const destroyerBtn = document.querySelector('.destroyerBtn')
-  // destroyerBtn.onclick = () => {
-  //   shipPlaceMenu(destroyerBtn.value)
-  // }
-
   // Dev Buttons
   const btn = document.querySelector(".getPlayers");
   btn.onclick = getPlayers;
@@ -267,7 +274,7 @@ function shipPlaceMenu(player, ship) {
   shipsDev.onclick = getShips;
   const boardsDev = document.querySelector(".getBoards");
   boardsDev.onclick = getBoards;
-  const shipTest = document.querySelector('.shipTest')
+  const shipTest = document.querySelector(".shipTest");
   shipTest.addEventListener("click", () => {
     game.placeShip(game.boards.p1Board, game.p1Ships.carrier, 0, 2);
   });
@@ -276,14 +283,13 @@ function shipPlaceMenu(player, ship) {
     boardRender(game.boards.p1Board);
   });
   const clearBoardDev = document.querySelector(".clearBoard1");
-  clearBoardDev.addEventListener('click', () =>{
+  clearBoardDev.addEventListener("click", () => {
     boardRender(game.boards.p1Board);
-  })
+  });
   const clearBoardDev2 = document.querySelector(".clearBoard2");
-  clearBoardDev2.addEventListener('click', () =>{
+  clearBoardDev2.addEventListener("click", () => {
     boardRender(game.boards.p2Board);
-  })
-
+  });
 
   return {
     boardSetup,
