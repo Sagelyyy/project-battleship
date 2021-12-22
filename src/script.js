@@ -51,7 +51,7 @@ const MAIN = (function () {
       for (let j = 0; j < 11; j += 1) {
         const gb = document.querySelector(".gb");
         const tile = document.createElement("div");
-        tile.classList.add("shotsTile");
+        tile.id = "shotsTile";
         tile.style.width = "50px";
         tile.style.height = "50px";
         tile.style.backgroundColor = "lightgrey";
@@ -113,8 +113,12 @@ const MAIN = (function () {
   }
 
   function getBoards() {
+    console.log('===== P1 =====')
     console.log(game.boards.p1Board);
+    console.log(game.boards.p1Shots)
+    console.log('===== P2 =====')
     console.log(game.boards.p2Board);
+    console.log(game.boards.p2Shots)
   }
 
   function boardRender(board) {
@@ -148,9 +152,9 @@ const MAIN = (function () {
 
   function gameSetup() {
     if (p1ShipsSelection.length === 0 && p2ShipsSelection.length === 0) {
-      document.querySelector(".shipSelect").hidden = true;
       document.querySelector(".playerForms").hidden = true;
-      // some new function() to start the game
+      currPlayer = 'p1'
+      gameRound('player 1')
     } else {
       document.querySelector(".shipSelect").hidden = false;
       let currPlacement;
@@ -172,8 +176,37 @@ const MAIN = (function () {
     }
   }
 
+  function fire(event){
+    // for some reason this is rendering on the play board, not the shots board
+    // maybe something to do with the class numbering being the same?
+    const classCoords = event.target.classList.value;
+    const coords = classCoords.split(/(\d)/);
+      if(currPlayer === 'p1'){
+        boardRender(game.boards.p1Shots)
+        game.receiveAttack(
+          game.boards.p1Shots,
+          game.boards.p2Board,
+          parseInt(coords[1], 10),
+          parseInt(coords[3], 10)
+        )
+        boardRender(game.boards.p1Shots)
+      }
+      const tiles = document.querySelectorAll("#shotsTile");
+      tiles.forEach((tile) => {
+        tile.removeEventListener("click", fire);
+      });
+  }
+
+  function gameRound(player){
+    const gameMsg = document.querySelector('.shipSelect')
+    gameMsg.textContent = `${player} take your shot!`
+    const tiles = document.querySelectorAll("#shotsTile");
+    tiles.forEach((tile) => {
+      tile.addEventListener("click", fire);
+    });
+  }
+
   function dropShip(event) {
-    // need to be able to seperate out which board it goes to somehow
     const classCoords = event.target.classList.value;
     const coords = classCoords.split(/(\d)/);
     if (currPlayer === "p1") {
@@ -209,7 +242,6 @@ const MAIN = (function () {
   }
 
   function shipPlaceMenu(player, ship) {
-    // need to differentiate between players like placeOnClick(game.currPlayer.carrier)
     if (player === game.boards.p1Board) {
       currPlayer = "p1";
       switch (ship) {
