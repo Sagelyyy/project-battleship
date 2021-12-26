@@ -8,6 +8,7 @@ const MAIN = (function () {
   let player2;
   let currShip;
   let currPlayer;
+  document.querySelector('.roundButton').style.visibility = 'hidden';
 
   function boardSetup() {
     let leftCol = 1;
@@ -62,8 +63,8 @@ const MAIN = (function () {
         }
 
         if (j > 0 && v !== 0) {
-          tile.classList.add(`x${xShotCount}`);
-          tile.classList.add(`y${shotCount}`);
+          tile.classList.add(`sx${xShotCount}`);
+          tile.classList.add(`sy${shotCount}`);
           // Dev
           // tile.textContent = `${xShotCount}, ${shotCount}`;
         }
@@ -122,14 +123,32 @@ const MAIN = (function () {
   }
 
   function boardRender(board) {
-    for (let row = 0; row < board.length; row += 1) {
-      for (let col = 0; col < board[row].length; col += 1) {
-        if (board[row][col] !== 0) {
-          const tile = document.querySelector(`.x${[row]}.y${[col]}`);
-          tile.style.backgroundColor = "red";
-        } else {
-          const tile = document.querySelector(`.x${[row]}.y${[col]}`);
-          tile.style.backgroundColor = "lightblue";
+    if(board === game.boards.p1Board || board === game.boards.p2Board){
+      for (let row = 0; row < board.length; row += 1) {
+        for (let col = 0; col < board[row].length; col += 1) {
+          if (board[row][col] !== 0) {
+            const tile = document.querySelector(`.x${[row]}.y${[col]}`);
+            tile.style.backgroundColor = "green";
+          } else {
+            const tile = document.querySelector(`.x${[row]}.y${[col]}`);
+            tile.style.backgroundColor = "lightblue";
+          }
+        }
+      }
+    } else if (board === game.boards.p1Shots || board === game.boards.p2Shots){
+      for (let row = 0; row < board.length; row += 1) {
+        for (let col = 0; col < board[row].length; col += 1) {
+          if (board[row][col] === 0) {
+            const tile = document.querySelector(`.sx${[row]}.sy${[col]}`);
+            tile.style.backgroundColor = "lightgrey";
+          }
+          if (board[row][col] === 'x') {
+            const tile = document.querySelector(`.sx${[row]}.sy${[col]}`);
+            tile.style.backgroundColor = "red";
+          } else if (board[row][col] === 'm') {
+            const tile = document.querySelector(`.sx${[row]}.sy${[col]}`);
+            tile.style.backgroundColor = "blue";
+          }
         }
       }
     }
@@ -152,24 +171,24 @@ const MAIN = (function () {
 
   function gameSetup() {
     if (p1ShipsSelection.length === 0 && p2ShipsSelection.length === 0) {
-      document.querySelector(".playerForms").hidden = true;
+      document.querySelector(".playerForms").style.visibility = 'hidden';
       currPlayer = 'p1'
-      gameRound('player 1')
+      gameRound()
     } else {
-      document.querySelector(".shipSelect").hidden = false;
+      document.querySelector(".playerForms").style.visibility = 'hidden';
       let currPlacement;
       if (p1ShipsSelection.length > 0) {
         currPlacement = p1ShipsSelection.pop();
         document.querySelector(
           ".gameMessage"
-        ).textContent = `Player 1 place your ${currPlacement}`;
+        ).textContent = `${player1.name} place your ${currPlacement}`;
         boardRender(game.boards.p1Board);
         shipPlaceMenu(game.boards.p1Board, currPlacement);
       } else {
         currPlacement = p2ShipsSelection.pop();
         document.querySelector(
           ".gameMessage"
-        ).textContent = `Player 2 place your ${currPlacement}`;
+        ).textContent = `${player2.name} place your ${currPlacement}`;
         boardRender(game.boards.p2Board);
         shipPlaceMenu(game.boards.p2Board, currPlacement);
       }
@@ -177,11 +196,15 @@ const MAIN = (function () {
   }
 
   function fire(event){
-    // for some reason this is rendering on the play board, not the shots board
-    // maybe something to do with the class numbering being the same?
     const classCoords = event.target.classList.value;
     const coords = classCoords.split(/(\d)/);
-      if(currPlayer === 'p1'){
+    const tiles = document.querySelectorAll("#shotsTile");
+
+    switch(currPlayer){
+      default:
+        console.log('something went wrong in fire')
+        break;
+      case 'p1':
         boardRender(game.boards.p1Shots)
         game.receiveAttack(
           game.boards.p1Shots,
@@ -190,20 +213,57 @@ const MAIN = (function () {
           parseInt(coords[3], 10)
         )
         boardRender(game.boards.p1Shots)
-      }
-      const tiles = document.querySelectorAll("#shotsTile");
-      tiles.forEach((tile) => {
-        tile.removeEventListener("click", fire);
-      });
+        currPlayer = 'p2'
+        tiles.forEach((tile) => {
+          tile.removeEventListener("click", fire);
+        });
+        preRound()
+        break;
+      case 'p2':
+        boardRender(game.boards.p2Shots)
+        game.receiveAttack(
+          game.boards.p2Shots,
+          game.boards.p1Board,
+          parseInt(coords[1], 10),
+          parseInt(coords[3], 10)
+        )
+        boardRender(game.boards.p2Shots)
+        currPlayer = 'p1'
+        tiles.forEach((tile) => {
+          tile.removeEventListener("click", fire);
+        });
+        preRound()
+        break
+    }
   }
 
-  function gameRound(player){
-    const gameMsg = document.querySelector('.shipSelect')
-    gameMsg.textContent = `${player} take your shot!`
+
+
+  function gameRound(){
+    document.querySelector('.roundButton').style.visibility = 'hidden';
+    if (currPlayer === 'p1'){
+      boardRender(game.boards.p1Board)
+      boardRender(game.boards.p1Shots)
+      const gameMsg = document.querySelector('.shipSelect')
+      gameMsg.textContent = `${player1.name} take your shot!`
+    }else {
+      boardRender(game.boards.p2Board)
+      boardRender(game.boards.p2Shots)
+      const gameMsg = document.querySelector('.shipSelect')
+      gameMsg.textContent = `${player2.name} take your shot!`
+    }
     const tiles = document.querySelectorAll("#shotsTile");
     tiles.forEach((tile) => {
       tile.addEventListener("click", fire);
     });
+  }
+
+  function preRound(){
+    document.querySelector('.roundButton').style.visibility = 'visible';
+    const next = document.querySelector('.nextTurn')
+    next.onclick = function () {
+      gameRound()
+    };
   }
 
   function dropShip(event) {
@@ -321,6 +381,15 @@ const MAIN = (function () {
   const clearBoardDev2 = document.querySelector(".clearBoard2");
   clearBoardDev2.addEventListener("click", () => {
     boardRender(game.boards.p2Board);
+  });
+
+  const shotsBoardDev = document.querySelector(".shotsBoard1");
+  shotsBoardDev.addEventListener("click", () => {
+    boardRender(game.boards.p1Shots);
+  });
+  const shotsBoardDev2 = document.querySelector(".shotsBoard2");
+  shotsBoardDev2.addEventListener("click", () => {
+    boardRender(game.boards.p2Shots);
   });
 
   return {
