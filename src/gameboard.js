@@ -3,6 +3,7 @@
 import shipFactory from "./ship.js";
 
 const gameboard = () => {
+  let gameOver = false;
   const boards = {
     p1Board: [
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -189,6 +190,7 @@ const gameboard = () => {
     receiveAttack,
     shipStatus,
     createShips,
+    gameOver
   };
 };
 

@@ -3,6 +3,7 @@ import gameboard from "./gameboard";
 let id = 1;
 
 const playerFactory = (name, type) => {
+  const loser = false;
   const setId = () => {
     const playerID = `player${id}`;
     id += 1;
@@ -20,7 +21,7 @@ const playerFactory = (name, type) => {
     }
   };
 
-  return { name, type, turn, playerID };
+  return { name, type, turn, playerID, loser };
 };
 
 export default playerFactory;

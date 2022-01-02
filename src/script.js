@@ -8,7 +8,7 @@ const MAIN = (function () {
   let player2;
   let currShip;
   let currPlayer;
-  document.querySelector('.roundButton').style.visibility = 'hidden';
+  document.querySelector(".roundButton").style.visibility = "hidden";
 
   function boardSetup() {
     let leftCol = 1;
@@ -79,7 +79,6 @@ const MAIN = (function () {
           tile.textContent = shotCol;
           shotCol += 1;
         }
-        
       }
       v += 1;
       xCount += 1;
@@ -114,16 +113,16 @@ const MAIN = (function () {
   }
 
   function getBoards() {
-    console.log('===== P1 =====')
+    console.log("===== P1 =====");
     console.log(game.boards.p1Board);
-    console.log(game.boards.p1Shots)
-    console.log('===== P2 =====')
+    console.log(game.boards.p1Shots);
+    console.log("===== P2 =====");
     console.log(game.boards.p2Board);
-    console.log(game.boards.p2Shots)
+    console.log(game.boards.p2Shots);
   }
 
   function boardRender(board) {
-    if(board === game.boards.p1Board || board === game.boards.p2Board){
+    if (board === game.boards.p1Board || board === game.boards.p2Board) {
       for (let row = 0; row < board.length; row += 1) {
         for (let col = 0; col < board[row].length; col += 1) {
           if (board[row][col] !== 0) {
@@ -135,17 +134,17 @@ const MAIN = (function () {
           }
         }
       }
-    } else if (board === game.boards.p1Shots || board === game.boards.p2Shots){
+    } else if (board === game.boards.p1Shots || board === game.boards.p2Shots) {
       for (let row = 0; row < board.length; row += 1) {
         for (let col = 0; col < board[row].length; col += 1) {
           if (board[row][col] === 0) {
             const tile = document.querySelector(`.sx${[row]}.sy${[col]}`);
             tile.style.backgroundColor = "lightgrey";
           }
-          if (board[row][col] === 'x') {
+          if (board[row][col] === "x") {
             const tile = document.querySelector(`.sx${[row]}.sy${[col]}`);
             tile.style.backgroundColor = "red";
-          } else if (board[row][col] === 'm') {
+          } else if (board[row][col] === "m") {
             const tile = document.querySelector(`.sx${[row]}.sy${[col]}`);
             tile.style.backgroundColor = "blue";
           }
@@ -171,11 +170,11 @@ const MAIN = (function () {
 
   function gameSetup() {
     if (p1ShipsSelection.length === 0 && p2ShipsSelection.length === 0) {
-      document.querySelector(".playerForms").style.visibility = 'hidden';
-      currPlayer = 'p1'
-      gameRound()
+      document.querySelector(".playerForms").style.visibility = "hidden";
+      currPlayer = "p1";
+      gameRound();
     } else {
-      document.querySelector(".playerForms").style.visibility = 'hidden';
+      document.querySelector(".playerForms").style.visibility = "hidden";
       let currPlacement;
       if (p1ShipsSelection.length > 0) {
         currPlacement = p1ShipsSelection.pop();
@@ -195,62 +194,84 @@ const MAIN = (function () {
     }
   }
 
-  function fire(event){
+  function fire(event) {
     const classCoords = event.target.classList.value;
     const coords = classCoords.split(/(\d)/);
     const tiles = document.querySelectorAll("#shotsTile");
 
-    switch(currPlayer){
+    switch (currPlayer) {
       default:
-        console.log('something went wrong in fire')
+        console.log("something went wrong in fire");
         break;
-      case 'p1':
-        boardRender(game.boards.p1Shots)
+      case "p1":
+        boardRender(game.boards.p1Shots);
         game.receiveAttack(
           game.boards.p1Shots,
           game.boards.p2Board,
           parseInt(coords[1], 10),
           parseInt(coords[3], 10)
-        )
-        boardRender(game.boards.p1Shots)
-        currPlayer = 'p2'
+        );
+        boardRender(game.boards.p1Shots);
+        currPlayer = "p2";
         tiles.forEach((tile) => {
           tile.removeEventListener("click", fire);
         });
-        preRound()
+        preRound();
         break;
-      case 'p2':
-        boardRender(game.boards.p2Shots)
+      case "p2":
+        boardRender(game.boards.p2Shots);
         game.receiveAttack(
           game.boards.p2Shots,
           game.boards.p1Board,
           parseInt(coords[1], 10),
           parseInt(coords[3], 10)
-        )
-        boardRender(game.boards.p2Shots)
-        currPlayer = 'p1'
+        );
+        boardRender(game.boards.p2Shots);
+        currPlayer = "p1";
         tiles.forEach((tile) => {
           tile.removeEventListener("click", fire);
         });
-        preRound()
-        break
+        preRound();
+        break;
     }
   }
 
+  function gameStatus() {
+    if (
+      game.p1Ships.battleship.isSunk() === true &&
+      game.p1Ships.carrier.isSunk() === true &&
+      game.p1Ships.cruiser.isSunk() === true &&
+      game.p1Ships.submarine.isSunk() === true &&
+      game.p1Ships.destroyer.isSunk() === true
+    ) {
+      game.gameOver = true;
+      player1.loser = true;
+    }
 
+    if (
+      game.p2Ships.battleship.isSunk() === true &&
+      game.p2Ships.carrier.isSunk() === true &&
+      game.p2Ships.cruiser.isSunk() === true &&
+      game.p2Ships.submarine.isSunk() === true &&
+      game.p2Ships.destroyer.isSunk() === true
+    ) {
+      game.gameOver = true;
+      player2.loser = true;
+    }
+  }
 
-  function gameRound(){
-    document.querySelector('.roundButton').style.visibility = 'hidden';
-    if (currPlayer === 'p1'){
-      boardRender(game.boards.p1Board)
-      boardRender(game.boards.p1Shots)
-      const gameMsg = document.querySelector('.shipSelect')
-      gameMsg.textContent = `${player1.name} take your shot!`
-    }else {
-      boardRender(game.boards.p2Board)
-      boardRender(game.boards.p2Shots)
-      const gameMsg = document.querySelector('.shipSelect')
-      gameMsg.textContent = `${player2.name} take your shot!`
+  function gameRound() {
+    document.querySelector(".roundButton").style.visibility = "hidden";
+    if (currPlayer === "p1") {
+      boardRender(game.boards.p1Board);
+      boardRender(game.boards.p1Shots);
+      const gameMsg = document.querySelector(".shipSelect");
+      gameMsg.textContent = `${player1.name} take your shot!`;
+    } else {
+      boardRender(game.boards.p2Board);
+      boardRender(game.boards.p2Shots);
+      const gameMsg = document.querySelector(".shipSelect");
+      gameMsg.textContent = `${player2.name} take your shot!`;
     }
     const tiles = document.querySelectorAll("#shotsTile");
     tiles.forEach((tile) => {
@@ -258,12 +279,23 @@ const MAIN = (function () {
     });
   }
 
-  function preRound(){
-    document.querySelector('.roundButton').style.visibility = 'visible';
-    const next = document.querySelector('.nextTurn')
-    next.onclick = function () {
-      gameRound()
-    };
+  function preRound() {
+    gameStatus()
+    if (game.gameOver === false) {
+      document.querySelector(".roundButton").style.visibility = "visible";
+      const next = document.querySelector(".nextTurn");
+      next.onclick = function () {
+        gameRound();
+      };
+    } else {
+      const gameMsg = document.querySelector(".shipSelect");
+      if(player1.loser === true){
+        gameMsg.textContent = `Game Over, ${player2.name} wins!`
+      }else{
+        gameMsg.textContent = `Game Over, ${player1.name} wins!`
+      }
+      
+    }
   }
 
   function dropShip(event) {
@@ -391,6 +423,11 @@ const MAIN = (function () {
   shotsBoardDev2.addEventListener("click", () => {
     boardRender(game.boards.p2Shots);
   });
+  const gameStatusBtn = document.querySelector('.gameStatus')
+  gameStatusBtn.addEventListener("click" , () => {
+    gameStatus()
+    console.log(game.gameOver)
+  })
 
   return {
     boardSetup,
