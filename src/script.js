@@ -8,7 +8,15 @@ const MAIN = (function () {
   let player2;
   let currShip;
   let currPlayer;
+  let devMode = false;
   document.querySelector(".roundButton").style.visibility = "hidden";
+  let devSection = document.querySelector('.dev')
+
+  if(devMode === true){
+    devSection.style.visibility = 'visible'
+  }else{
+    devSection.style.visibility = 'hidden'
+  }
 
   function boardSetup() {
     let leftCol = 1;
@@ -282,6 +290,13 @@ const MAIN = (function () {
   function preRound() {
     gameStatus()
     if (game.gameOver === false) {
+      const gameMsg = document.querySelector(".shipSelect");
+      if(currPlayer === 'p1')
+      {
+        gameMsg.textContent = `${player1.name} click next to start your turn!`
+      }else{
+        gameMsg.textContent = `${player2.name} click next to start your turn!`
+      }
       document.querySelector(".roundButton").style.visibility = "visible";
       const next = document.querySelector(".nextTurn");
       next.onclick = function () {
